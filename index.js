@@ -3,23 +3,6 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-
-const roles = {'737501089301004368':'@everyone',
-'737502937642696787':'Führer',
-'737506837598961733': 'VIP Pass 🛀🏾',
-'870034757998747659': 'DictaBotz',
-'911984630209577001': 'Valhalla',
-'912004944427622471': 'Hydra',
-'939658559879254087': 'Twitch Subscriber',
-'939658559879254088': 'Twitch Subscriber: Tier 1',
-'939658559879254089': 'Twitch Subscriber: Tier 2',
-'939658559879254090': 'Twitch Subscriber: Tier 3',
-'939662968281530450': 'MEE6',
-'939752952925679646': 'TweetShift',
-'940059164951060532': 'Countr',
-'940406733413707810': 'Dank Memer',
-'944626644335882280': 'AfterLife',
-'959477807036104728': 'Money Bot'}
 let weeklyGains = 0;
 
 const client = new DiscordJS.Client({
