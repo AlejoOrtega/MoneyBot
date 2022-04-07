@@ -104,7 +104,7 @@ const optionYo = (user, roles, message) => {
         content: `${user}, estos son tus roles:\n\n${roles.join("\n")}`
     })
 }
-const optionPing = () => {
+const optionPing = (message) => {
     message.reply({
         content: 'pong',
         ephemeral: false,
