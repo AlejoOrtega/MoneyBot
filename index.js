@@ -74,7 +74,12 @@ client.on('ready', () => {
         },{
             name: 'stoploss',
             description: 'Specify stoploss mark',
-            required: true,
+            required: false,
+            type: DiscordJS.Constants.ApplicationCommandOptionTypes.NUMBER
+        },{
+            name: 'takeprofit',
+            description: 'Specify take profit mark',
+            required: false,
             type: DiscordJS.Constants.ApplicationCommandOptionTypes.NUMBER
         }
         ]
@@ -88,11 +93,10 @@ client.on('interactionCreate', async (interaction) => {
     }
 
     const {commandName, options} = interaction
-    let number, stock, price, direction, stoploss;
+    let number, stock, price, direction, stoploss, takeprofit;
 
     switch(commandName){
         case 'addweeklygains':
-
             number = options.getNumber('number')
             weeklyGains+= number;
             interaction.reply({
@@ -122,8 +126,9 @@ client.on('interactionCreate', async (interaction) => {
             price = options.getNumber('price')
             direction = options.getString('direction')
             stoploss = options.getNumber('stoploss')
+            takeprofit = options.getNumber('takeprofit')
 
-            client.channels.cache.get('963203161445789756').send(`SIGNAL: ${stock} - $${price} - ${direction.toUpperCase()} || StopLoss: ${stoploss}`) 
+            client.channels.cache.get('963203161445789756').send(signal(stock, price, direction, stoploss, takeprofit)) 
             
             interaction.reply({
                 content: `Your signal has been sent to <#963203161445789756>`,
@@ -132,6 +137,17 @@ client.on('interactionCreate', async (interaction) => {
             
     }
 })
+
+function signal(stock, price, direction, stoploss, takeprofit){
+    let message = `**SIGNAL**: ${stock} - $${price} - ${direction.toUpperCase()} ||`
+    if(stoploss!= null){
+        message+=  ` StopLoss: ${stoploss} ` 
+    }
+    if(takeprofit!=null){
+        message+= ` Take Profit: ${takeprofit}`
+    }
+    return message
+}
 
 //message
 client.on('messageCreate', (message) =>{
