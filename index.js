@@ -136,13 +136,13 @@ client.on('interactionCreate', async (interaction) => {
 //message
 client.on('messageCreate', (message) =>{
     let user = message.author.username;
-    let roles = getInfo(message)
+    //let roles = getInfo(message)
     switch (message.content){
         case "$me":
             //optionYo(user, roles, message)
             break;
         case "$ping":
-            optionPing(message)
+            //optionPing(message)
             break;
     }
     
