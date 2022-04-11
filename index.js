@@ -138,10 +138,10 @@ client.on('messageCreate', (message) =>{
     let user = message.author.username;
     let roles = getInfo(message)
     switch (message.content){
-        case "me":
-            optionYo(user, roles, message)
+        case "$me":
+            //optionYo(user, roles, message)
             break;
-        case "ping":
+        case "$ping":
             optionPing(message)
             break;
     }
