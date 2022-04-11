@@ -1,25 +1,10 @@
-import DiscordJS, { Intents } from 'discord.js'
+import DiscordJS, { Intents, MessageEmbed } from 'discord.js'
 import dotenv from 'dotenv'
+import requirejs from 'requirejs'
 
 dotenv.config()
 
 let weeklyGains = 0;
-const roles = {'737501089301004368':'@everyone',
-'737502937642696787':'Führer',
-'737506837598961733': 'VIP Pass 🛀🏾',
-'870034757998747659': 'DictaBotz',
-'911984630209577001': 'Valhalla',
-'912004944427622471': 'Hydra',
-'939658559879254087': 'Twitch Subscriber',
-'939658559879254088': 'Twitch Subscriber: Tier 1',
-'939658559879254089': 'Twitch Subscriber: Tier 2',
-'939658559879254090': 'Twitch Subscriber: Tier 3',
-'939662968281530450': 'MEE6',
-'939752952925679646': 'TweetShift',
-'940059164951060532': 'Countr',
-'940406733413707810': 'Dank Memer',
-'944626644335882280': 'AfterLife',
-'959477807036104728': 'Money Bot'}
 
 const client = new DiscordJS.Client({
     intents : [
@@ -29,10 +14,10 @@ const client = new DiscordJS.Client({
 })
 
 client.on('ready', () => {
-    console.log('The bot is ready')
+    console.log('Making Money')
 
     // guild
-    const guildId = '737501089301004368'
+    const guildId = '844745315780919315'
     const guild = client.guilds.cache.get(guildId)
     let commands
     if (guild){
@@ -41,24 +26,59 @@ client.on('ready', () => {
         commands = client.application?.commands
     }
 
-    commands?.create(
-    {
+    commands?.create({
         name: 'addweeklygains',
-        description: 'addWeeklyGains',
+        description: 'Add a number to the Weekly Gains',
         options:[
         {
-            name: 'numbertoadd',
-            description: 'Add number',
+            name: 'number',
+            description: 'Number to be added to weeklyGains',
             required: true,
             type: DiscordJS.Constants.ApplicationCommandOptionTypes.NUMBER
         }
         ]
-    },
-    {
-        name: 'ping',
-        description: 'Te digo Pong :)',
-    }
-    )
+    })
+    commands?.create({
+        name: 'setweeklygains',
+        description: 'Set number for Weekly Gains',
+        options:[{
+            name: 'number',
+            description: 'Number to be set as weeklyGains',
+            required: true,
+            type: DiscordJS.Constants.ApplicationCommandOptionTypes.NUMBER
+        }]
+    })
+    commands?.create({
+        name: 'weeklygains',
+        description: 'What is currently the Weekly Gain',
+    })
+    commands?.create({
+        name: 'newsignal',
+        description: 'Send a new signal to the community',
+        options:[{
+            name:'stock',
+            description: 'Specify which stock is',
+            required: true,
+            type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING
+        },
+        {
+            name: 'price',
+            description: 'Price Target for the contract',
+            required: true,
+            type: DiscordJS.Constants.ApplicationCommandOptionTypes.NUMBER
+        },{
+            name: 'direction',
+            description: 'Specify PUTS or CALLS',
+            required: true,
+            type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING
+        },{
+            name: 'stoploss',
+            description: 'Specify stoploss mark',
+            required: true,
+            type: DiscordJS.Constants.ApplicationCommandOptionTypes.NUMBER
+        }
+        ]
+    })
 })
 
 //interaction 
@@ -68,19 +88,48 @@ client.on('interactionCreate', async (interaction) => {
     }
 
     const {commandName, options} = interaction
+    let number, stock, price, direction, stoploss;
 
-    if (commandName === 'ping'){
-        interaction.reply({
-            content: 'pong',
-            ephemeral: false,
-        })
-    }else if (commandName === 'addweeklygains'){
-        const number = options.getNumber('numbertoadd')
-        weeklyGains+= number;
-        interaction.reply({
-            content: `${weeklyGains}`,
-            ephemeral: false,
-        })
+    switch(commandName){
+        case 'addweeklygains':
+
+            number = options.getNumber('number')
+            weeklyGains+= number;
+            interaction.reply({
+                content: `${weeklyGains}`,
+                ephemeral: false,
+            })
+
+            break;
+        case 'setweeklygains':
+            number = options.getNumber('number')
+            weeklyGains = number;
+            interaction.reply({
+                content: `${weeklyGains}`,
+                ephemeral: false,
+            })
+
+            break;
+        case 'weeklygains':
+            interaction.reply({
+                content: `${weeklyGains}`,
+                ephemeral: false,
+            })
+
+            break;
+        case 'newsignal':
+            stock = options.getString('stock')
+            price = options.getNumber('price')
+            direction = options.getString('direction')
+            stoploss = options.getNumber('stoploss')
+
+            client.channels.cache.get('963203161445789756').send(`SIGNAL: ${stock} - $${price} - ${direction.toUpperCase()} || StopLoss: ${stoploss}`) 
+            
+            interaction.reply({
+                content: `Your signal has been sent to <#963203161445789756>`,
+                ephemeral: false,
+            })
+            
     }
 })
 
@@ -89,7 +138,7 @@ client.on('messageCreate', (message) =>{
     let user = message.author.username;
     let roles = getInfo(message)
     switch (message.content){
-        case "yo":
+        case "me":
             optionYo(user, roles, message)
             break;
         case "ping":
@@ -108,6 +157,7 @@ const optionPing = (message) => {
     message.reply({
         content: 'pong',
         ephemeral: false,
+        
     })
 }
 const getInfo = (message) => {
