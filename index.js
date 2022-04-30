@@ -128,7 +128,7 @@ client.on('interactionCreate', async (interaction) => {
             stoploss = options.getNumber('stoploss')
             takeprofit = options.getNumber('takeprofit')
 
-            client.channels.cache.get('963203161445789756').send(signal(stock, price, direction, stoploss, takeprofit)) 
+            client.channels.cache.get('963203161445789756').send(signal(stock, price, direction, stoploss, takeprofit, interaction)) 
             
             interaction.reply({
                 content: `Your signal has been sent to <#963203161445789756>`,
@@ -138,7 +138,7 @@ client.on('interactionCreate', async (interaction) => {
     }
 })
 
-function signal(stock, price, direction, stoploss, takeprofit){
+function signal(stock, price, direction, stoploss, takeprofit, interaction){
     let message = `**SIGNAL**: ${stock} - $${price} - ${direction.toUpperCase()} ||`
     if(stoploss!= null){
         message+=  ` StopLoss: ${stoploss} ` 
@@ -146,6 +146,7 @@ function signal(stock, price, direction, stoploss, takeprofit){
     if(takeprofit!=null){
         message+= ` Take Profit: ${takeprofit}`
     }
+    message+=` By ${interaction.user.tag}`
     return message
 }
 
